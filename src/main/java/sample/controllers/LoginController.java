@@ -40,7 +40,6 @@ public class LoginController extends XMPPClientSession implements Initializable,
 
 	@FXML
 	void logInButtonClick(ActionEvent event) throws IOException, NoSuchAlgorithmException {
-
 		String login = loginTextField.getText();
 		String password = passwordTextField.getText();
 
@@ -84,13 +83,7 @@ public class LoginController extends XMPPClientSession implements Initializable,
 
 		Thread t = new Thread();
 
-		chatManager.addIncomingListener(new IncomingChatMessageListener() {
-			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
-				String name = getNameFromJid(entityBareJid);
-				XMPPClientSession.conversation.add(name + ": " + message.getBody());
-				System.out.println("New message from " + entityBareJid + ": " + message.getBody());
-			}
-		});
+
 
 		screensController.setScreen(Main.screen2ID);
 		System.out.println("Zalogowano!");

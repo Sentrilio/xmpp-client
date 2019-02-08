@@ -8,9 +8,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 
 public class XMPPClientSession {
 
@@ -20,6 +18,6 @@ public class XMPPClientSession {
 	protected static XMPPTCPConnectionConfiguration config;
 	protected static XMPPTCPConnection connection;
 	protected static ChatManager chatManager;
-	protected static List<String> conversation = new ArrayList<String>();
+	protected static Queue<String> conversation= new PriorityQueue<String>();
 
 }
