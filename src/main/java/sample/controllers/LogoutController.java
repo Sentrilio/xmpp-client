@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat2.Chat;
+import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -20,7 +21,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LogoutController extends XMPPClientSession implements Initializable, ControlledScreen {
-
 
 	ScreensController screensController;
 
@@ -73,9 +73,19 @@ public class LogoutController extends XMPPClientSession implements Initializable
 		}
 	}
 
+//	public void addListener(){
+//		chatManager.addIncomingListener(new IncomingChatMessageListener() {
+//			public void newIncomingMessage(EntityBareJid entityBareJid, org.jivesoftware.smack.packet.Message message, Chat chat) {
+//				System.out.println("New message from " + entityBareJid + ": " + message.getBody());
+//			}
+//		});
+//	}
 
+	@FXML
 	public void initialize(URL location, ResourceBundle resources) {
-
+		System.out.println("before");
+//		addListener();
+		System.out.println("after");
 	}
 
 	public void setScreenParent(ScreensController screenParent) {

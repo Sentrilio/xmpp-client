@@ -80,11 +80,11 @@ public class LoginController extends XMPPClientSession implements Initializable,
 		}
 		chatManager = ChatManager.getInstanceFor(connection);
 		screensController.setScreen(Main.screen2ID);
-		chatManager.addIncomingListener(new IncomingChatMessageListener() {
-			public void newIncomingMessage(EntityBareJid entityBareJid, org.jivesoftware.smack.packet.Message message, Chat chat) {
-				System.out.println("New message from " + entityBareJid + ": " + message.getBody());
-			}
-		});
+//		chatManager.addIncomingListener(new IncomingChatMessageListener() {
+//			public void newIncomingMessage(EntityBareJid entityBareJid, org.jivesoftware.smack.packet.Message message, Chat chat) {
+//				System.out.println("New message from " + entityBareJid + ": " + message.getBody());
+//			}
+//		});
 		System.out.println("Zalogowano!");
 		info.setText("");
 		loginTextField.setText("");
