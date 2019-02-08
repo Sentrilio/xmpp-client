@@ -19,10 +19,10 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+
 		ScreensController screensController = new ScreensController();
 		screensController.loadScreen(Main.screen1ID, Main.screen1File);
 		screensController.loadScreen(Main.screen2ID, Main.screen2File);
-
 		screensController.setScreen(Main.screen1ID);
 
 		Group root = new Group();
@@ -49,7 +49,7 @@ public class Main extends Application {
 		});
 //        Parent root = FXMLLoader.load(getClass().getResource("/loginScreen.fxml"));
 //        primaryStage.setTitle("Hello World");
-//        primaryStage.setScene(new Scene(root, 300, 275));
+//        primaryStage.setScene(new Scene(root, 800, 600));
 //        primaryStage.show();
 	}
 

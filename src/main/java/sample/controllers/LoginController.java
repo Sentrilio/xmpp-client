@@ -10,6 +10,7 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginController extends XMPPClientSession implements Initializable, ControlledScreen {
 
@@ -42,7 +45,6 @@ public class LoginController extends XMPPClientSession implements Initializable,
 		String password = passwordTextField.getText();
 
 		if (login.equals("") || password.equals("")) {
-//			screensController.setScreen(Main.screen1ID);
 			info.setText("Pola nie mogą być puste!");
 			return;
 		}
@@ -79,16 +81,37 @@ public class LoginController extends XMPPClientSession implements Initializable,
 			return;
 		}
 		chatManager = ChatManager.getInstanceFor(connection);
+
+		Thread t = new Thread();
+
+		chatManager.addIncomingListener(new IncomingChatMessageListener() {
+			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
+				String name = getNameFromJid(entityBareJid);
+				XMPPClientSession.conversation.add(name + ": " + message.getBody());
+				System.out.println("New message from " + entityBareJid + ": " + message.getBody());
+			}
+		});
+
 		screensController.setScreen(Main.screen2ID);
-//		chatManager.addIncomingListener(new IncomingChatMessageListener() {
-//			public void newIncomingMessage(EntityBareJid entityBareJid, org.jivesoftware.smack.packet.Message message, Chat chat) {
-//				System.out.println("New message from " + entityBareJid + ": " + message.getBody());
-//			}
-//		});
 		System.out.println("Zalogowano!");
 		info.setText("");
 		loginTextField.setText("");
 		passwordTextField.setText("");
+	}
+
+	private String getNameFromJid(EntityBareJid entityBareJid) {
+		String name = "";
+		for (char c : entityBareJid.toString().toCharArray()) {
+			if (c != '@') {
+				name+=c;
+			}else{
+				break;
+			}
+		}
+		return name;
+	}
+
+	public void Listener() {
 	}
 
 	public void setScreenParent(ScreensController screenParent) {
