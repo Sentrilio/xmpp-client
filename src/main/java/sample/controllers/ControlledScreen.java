@@ -1,5 +1,5 @@
 package sample.controllers;
 
 public interface ControlledScreen {
-	public void setScreenParten(ScreensController screenPage);
+	public void setScreenParent(ScreensController screenParent);
 }
