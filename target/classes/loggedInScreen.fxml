@@ -11,14 +11,12 @@
       <Button fx:id="logoutButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="72.0" text="Log out" />
       <VBox fx:id="VBox" layoutX="219.0" layoutY="30.0" prefHeight="431.0" prefWidth="585.0">
          <children>
-            <TextArea fx:id="conversationField" editable="false" focusTraversable="false" prefHeight="398.0" prefWidth="585.0" visible="false" />
+            <TextArea fx:id="conversationField" editable="false" focusTraversable="false" prefHeight="398.0" prefWidth="585.0" />
             <TextField fx:id="sendTextField" prefHeight="12.0" prefWidth="585.0" />
          </children>
       </VBox>
       <TextField fx:id="destName" layoutX="22.0" layoutY="163.0" promptText="name of friend" />
       <Button fx:id="sendButton" layoutX="155.0" layoutY="430.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
       <Button fx:id="refreshButton" layoutX="46.0" layoutY="430.0" mnemonicParsing="false" onAction="#refreshButtonClick" text="Refresh" />
-      <Button fx:id="adminButton" layoutX="26.0" layoutY="246.0" mnemonicParsing="false" onAction="#adminConversationButtonClick" text="admin" />
-      <Button fx:id="loginButton" layoutX="26.0" layoutY="294.0" mnemonicParsing="false" onAction="#loginConversationButtonClick" text="login" />
    </children>
 </AnchorPane>

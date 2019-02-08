@@ -50,19 +50,12 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 	@FXML
 	private TextField destName;
 
-//	@FXML
-//	public TextArea conversationField;
+	@FXML
+	public TextArea conversationField;
 
 	@FXML
 	private TextField sendTextField;
 
-	@FXML
-	private Button adminButton;
-
-	@FXML
-	private Button loginButton;
-
-	HashMap<String, TextField> allConversations = new HashMap<>();
 
 	@FXML
 	void logoutButtonClick(ActionEvent event) {
@@ -73,17 +66,9 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 	@FXML
 	void sendButtonClick(ActionEvent event) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
 		String message = sendTextField.getText();
-//		sendTextField.clear();
-
-//		conversationField.appendText("me: " + message + "\n");
+		sendTextField.clear();
+		conversationField.appendText("me: " + message + "\n");
 		String jidString = destName.getText();
-		for(Map.Entry<String, TextField> entry : allConversations.entrySet()) {
-			String key = entry.getKey();
-			TextField value = entry.getValue();
-			if(key.equals(jidString)){
-				value.appendText("me: " + message + "\n");
-			}
-		}
 		jidString += "@" + xmppDomain;
 		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
 		Chat chat = chatManager.chatWith(jid);
@@ -109,16 +94,12 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 
 	@FXML
 	void refreshButtonClick(ActionEvent event) {
-		allConversations.put("admin",new TextField());
-		allConversations.put("login",new TextField());
+
 
 		chatManager.addIncomingListener(new IncomingChatMessageListener() {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
-				TextField conversationWithUser = allConversations.get(name);
-				conversationWithUser.appendText(name + ": " + message.getBody() + "\n");
-				allConversations.replace(name,conversationWithUser);
-//				conversationField.appendText(name + ": " + message.getBody() + "\n");// dodać do konkretnej historii
+				conversationField.appendText(name + ": " + message.getBody() + "\n");// dodać do konkretnej historii
 			}
 		});
 //		refreshChat();
@@ -139,32 +120,6 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 	}
 
 
-	@FXML
-	void adminConversationButtonClick(ActionEvent event) {
-//		allConversations.get("admin").setVisible(true);
-		for(Map.Entry<String, TextField> entry : allConversations.entrySet()) {
-			String key = entry.getKey();
-			TextField value = entry.getValue();
-			if(key.equals("admin")){
-				value.setVisible(true);
-			}else{
-				value.setVisible(false);
-			}
-		}
-	}
-
-	@FXML
-	void loginConversationButtonClick(ActionEvent event) {
-		for(Map.Entry<String, TextField> entry : allConversations.entrySet()) {
-			String key = entry.getKey();
-			TextField value = entry.getValue();
-			if(key.equals("login")){
-				value.setVisible(true);
-			}else{
-				value.setVisible(false);
-			}
-		}
-	}
 	@FXML
 	public void initialize(URL location, ResourceBundle resources) {
 
