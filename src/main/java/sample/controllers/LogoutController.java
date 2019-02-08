@@ -5,6 +5,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.chat2.Chat;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 import sample.Main;
 import sample.XMPPClientSession;
 
@@ -20,8 +28,41 @@ public class LogoutController extends XMPPClientSession implements Initializable
 	private Button logoutButton;
 
 	@FXML
+	private Button sendButton;
+	@FXML
+	private VBox VBox;
+
+	@FXML
+	private TextField destName;
+
+	@FXML
+	private TextArea conversationField;
+
+	@FXML
+	private TextField sendTextField;
+
+	@FXML
 	void logoutButtonClick(ActionEvent event) {
 		System.out.println("Logout button clicked");
+		disconnect();
+	}
+
+	@FXML
+	void sendButtonClick(ActionEvent event) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
+		String message = sendTextField.getText();
+		sendTextField.clear();
+		conversationField.appendText(message+ "\n");
+		/////////////////////////////////////////////
+
+		String jidString = destName.getText();
+		jidString += "@" + xmppDomain;
+
+		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
+		Chat chat = chatManager.chatWith(jid);
+		chat.send(message);
+	}
+
+	public void disconnect() {
 		try {
 			connection.disconnect();
 			System.out.println("disconnected");
@@ -29,7 +70,6 @@ public class LogoutController extends XMPPClientSession implements Initializable
 		} catch (Exception e) {
 			System.out.println("something went wrong with disconnecting");
 			e.printStackTrace();
-			screensController.setScreen(Main.screen2ID);
 		}
 	}
 
@@ -41,4 +81,6 @@ public class LogoutController extends XMPPClientSession implements Initializable
 	public void setScreenParent(ScreensController screenParent) {
 		screensController = screenParent;
 	}
+
+
 }
