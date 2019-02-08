@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-core:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: xpp3:xpp3:1.1.4c" level="project" />
+    <orderEntry type="library" name="Maven: org.jxmpp:jxmpp-core:0.6.3" level="project" />
+    <orderEntry type="library" name="Maven: org.jxmpp:jxmpp-util-cache:0.6.3" level="project" />
+    <orderEntry type="library" name="Maven: org.jxmpp:jxmpp-jid:0.6.3" level="project" />
+    <orderEntry type="library" name="Maven: org.minidns:minidns-core:0.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-tcp:4.3.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.igniterealtime.smack:smack-debug:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-resolver-javax:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-im:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-experimental:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-extensions:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.57" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-java7:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.igniterealtime.smack:smack-sasl-javax:4.3.1" level="project" />
+  </component>
+</module>
