@@ -159,38 +159,38 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		System.out.println(xmppSession.userAccount.getLogin());
 		System.out.println(xmppSession.userAccount.getPassword());
 		// wylogowac
-		xmppSession.connection.disconnect();
-		//dodać listenera:
-		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
-		xmppSession.roster.addRosterListener(new RosterListener() {
-
-			@Override
-			public void entriesAdded(Collection<Jid> collection) {
-
-			}
-
-			@Override
-			public void entriesUpdated(Collection<Jid> collection) {
-
-			}
-
-			@Override
-			public void entriesDeleted(Collection<Jid> collection) {
-
-			}
-
-			public void presenceChanged(Presence presence) {
-				System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
-			}
-		});
-
-		try {
-			xmppSession.connection.connect();
-			xmppSession.connection.login(xmppSession.userAccount.getLogin(),xmppSession.userAccount.getPassword());
-		} catch (XMPPException | SmackException | InterruptedException e) {
-			System.out.println("something went wrong with logging user on the server");
-			e.printStackTrace();
-		}
+//		xmppSession.connection.disconnect();
+//		//dodać listenera:
+//		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
+//		xmppSession.roster.addRosterListener(new RosterListener() {
+//
+//			@Override
+//			public void entriesAdded(Collection<Jid> collection) {
+//
+//			}
+//
+//			@Override
+//			public void entriesUpdated(Collection<Jid> collection) {
+//
+//			}
+//
+//			@Override
+//			public void entriesDeleted(Collection<Jid> collection) {
+//
+//			}
+//
+//			public void presenceChanged(Presence presence) {
+//				System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
+//			}
+//		});
+//
+//		try {
+//			xmppSession.connection.connect();
+//			xmppSession.connection.login(xmppSession.userAccount.getLogin(),xmppSession.userAccount.getPassword());
+//		} catch (XMPPException | SmackException | InterruptedException e) {
+//			System.out.println("something went wrong with logging user on the server");
+//			e.printStackTrace();
+//		}
 
 		for (Region r : controls) {
 			if (r == refreshButton) {
@@ -203,17 +203,12 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
 				conversationField.appendText(name + ": " + message.getBody() + "\n");
+				System.out.println("New message from: "+name + ": " + message.getBody() + "\n");
 
 			}
 		});
 		System.out.println("started listening incoming messages");
-
-		System.out.println("printing rosters:");
-//		roster = Roster.getInstanceFor(xmppSession.connection);
-//		Collection<RosterEntry> entries = roster.getEntries();
-//		for (RosterEntry entry : entries) {
-//			System.out.println(entry);
-//		}
+		
 	}
 
 
