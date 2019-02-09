@@ -6,7 +6,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
@@ -14,6 +17,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.stringprep.XmppStringprepException;
 import sample.Main;
 import sample.XMPPClientSession;
 import sample.model.UserAccount;
@@ -37,6 +41,9 @@ public class LoginController extends XMPPClientSession implements Initializable,
 
 	@FXML
 	private PasswordField passwordTextField;
+
+	@FXML
+	private AnchorPane anchorPane;
 
 	@FXML
 	void logInButtonClick(ActionEvent event) throws IOException, NoSuchAlgorithmException {
@@ -80,31 +87,12 @@ public class LoginController extends XMPPClientSession implements Initializable,
 			return;
 		}
 		chatManager = ChatManager.getInstanceFor(connection);
-
-		Thread t = new Thread();
-
-
-
+		System.out.println(Main.screen2ID);
 		screensController.setScreen(Main.screen2ID);
 		System.out.println("Zalogowano!");
 		info.setText("");
 		loginTextField.setText("");
 		passwordTextField.setText("");
-	}
-
-	private String getNameFromJid(EntityBareJid entityBareJid) {
-		String name = "";
-		for (char c : entityBareJid.toString().toCharArray()) {
-			if (c != '@') {
-				name+=c;
-			}else{
-				break;
-			}
-		}
-		return name;
-	}
-
-	public void Listener() {
 	}
 
 	public void setScreenParent(ScreensController screenParent) {

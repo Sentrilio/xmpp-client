@@ -14,8 +14,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import org.jivesoftware.smack.MessageListener;
@@ -36,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class LoggedInController extends XMPPClientSession implements Initializable, ControlledScreen {
 
 	ScreensController screensController;
+
 	@FXML
 	private Button refreshButton;
 
@@ -56,6 +60,40 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 	@FXML
 	private TextField sendTextField;
 
+	@FXML
+	private AnchorPane anchorPane;
+
+
+	private List<Region> controls = new ArrayList<>();
+
+	@FXML
+	public void initialize(URL location, ResourceBundle resources) {
+		controls.add(refreshButton);
+		controls.add(logoutButton);
+		controls.add(sendButton);
+		controls.add(sendButton);
+		controls.add(VBox);
+		controls.add(destName);
+		controls.add(conversationField);
+		controls.add(sendTextField);
+		for (Region r : controls) {
+			if(r != refreshButton){
+				r.setVisible(false);
+			}
+		}
+		anchorPane.setOnKeyPressed(event -> {
+			if(event.getCode() == KeyCode.ENTER){
+				System.out.println("kliknięto enter");
+				try {
+					sendMessage();
+				} catch (XmppStringprepException | SmackException.NotConnectedException | InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+	}
+
 
 	@FXML
 	void logoutButtonClick(ActionEvent event) {
@@ -65,6 +103,10 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 
 	@FXML
 	void sendButtonClick(ActionEvent event) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
+		sendMessage();
+	}
+
+	private void sendMessage() throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
 		String message = sendTextField.getText();
 		sendTextField.clear();
 		conversationField.appendText("me: " + message + "\n");
@@ -73,7 +115,6 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
 		Chat chat = chatManager.chatWith(jid);
 		chat.send(message);
-//		refreshChat();
 	}
 
 	public void disconnect() {
@@ -94,16 +135,25 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 
 	@FXML
 	void refreshButtonClick(ActionEvent event) {
+		setControlVariables();
+	}
 
-
+	private void setControlVariables() {
+		for (Region r : controls) {
+			if(r == refreshButton){
+				r.setVisible(false);
+			}else{
+				r.setVisible(true);
+			}
+		}
 		chatManager.addIncomingListener(new IncomingChatMessageListener() {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
 				conversationField.appendText(name + ": " + message.getBody() + "\n");// dodać do konkretnej historii
+
 			}
 		});
-//		refreshChat();
-//		refreshButton.setDisable(true);
+		System.out.println("started listening incoming messages");
 	}
 
 
@@ -119,80 +169,4 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 		return name;
 	}
 
-
-	@FXML
-	public void initialize(URL location, ResourceBundle resources) {
-
-//		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
-//
-//			public void handle(ActionEvent event) {
-//				System.out.println("this is called every 1 second on UI thread");
-//				if(!XMPPClientSession.conversation.isEmpty()){
-//					System.out.println(XMPPClientSession.conversation.remove());
-//				}
-//			}
-//		}));
-//		fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
-//		fiveSecondsWonder.play();
-
-//		Task task = new Task<Void>() {
-//			protected Void call() throws Exception {
-//				updateMessage("cos sie zadziało");
-////				updateMessage(XMPPClientSession.conversation.get(0));
-//
-////				if(XMPPClientSession.conversation.isEmpty()){
-////					System.out.println("empty");
-////				}else{
-////					conversationField.appendText();
-////					System.out.println("something happened");
-////				}
-//				return null;
-//			}
-//		};
-//		conversationField.textProperty().bind(task.messageProperty());
-//		new Thread(task).start();
-
-//		Timer timer = new Timer();
-//		timer.scheduleAtFixedRate(new TimerTask() {
-//			@Override
-//			public void run() {
-//				System.out.print("I would be called every 1 seconds\n");
-//				if(!XMPPClientSession.conversation.isEmpty()){
-//					conversationField.appendText(XMPPClientSession.conversation.remove());
-//				}
-//			}
-//		}, 0, 1000);
-
-
-//		conversationField.textProperty().bind()
-		//		final TimerTask timerTask = new TimerTask() {
-//			@Override
-//			public void run() {
-////				System.out.println("hello world");
-//				System.out.println(TimeUnit.SECONDS.toMillis(1));
-////				if(XMPPClientSession.conversation.isEmpty())
-//			}
-//		};
-//		conversationField.textProperty().bind(timerTask.messageProperty());
-//
-//		Timer timer = new Timer();
-//		timer.schedule(timerTask,100, TimeUnit.SECONDS.toMillis(1));
-
-//		Service service = new Service() {
-//			@Override
-//			protected Task createTask() {
-//				System.out.println("elo");
-//				return null;
-//			}
-//		};
-//		service.start();
-//		service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-//			public void handle(WorkerStateEvent t) {
-////				service.setPeriod(Duration.seconds(1 + Math.random()*100));
-//			}
-//		});
-
-
-//		System.out.println("after");
-	}
 }
