@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import sample.Main;
 
 import java.util.HashMap;
 
@@ -37,12 +38,34 @@ public class ScreensController extends StackPane {
 			ControlledScreen myScreenController = ((ControlledScreen) myLoader.getController());
 			myScreenController.setScreenParent(this);
 			addScreen(name, loadScreen);
+			Main.listOfControllers.add(myScreenController);
 			return true;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return false;
 		}
 	}
+//	public boolean loadScreen(String name, String resource,ControlledScreen previousController) {
+//		try {
+//			FXMLLoader myLoader = new FXMLLoader(getClass().getResource(resource));
+//			Parent loadScreen = (Parent) myLoader.load();
+//			ControlledScreen myScreenController = ((ControlledScreen) myLoader.getController());
+//			myScreenController.setScreenParent(this);
+//			addScreen(name, loadScreen);
+//
+//			////////////////////////////////////////
+//			if(resource.equals("/loggedInScreen.fxml")){
+//				FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginScreen.fxml"));
+//				Parent root = loader.load();
+//				LoginController controller = loader.getController();
+//				System.out.println(controller.temp);
+//			}
+//			return true;
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//			return false;
+//		}
+//	}
 
 	public boolean setScreen(final String name) {
 		if (screens.get(name) != null) {

@@ -8,7 +8,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import sample.controllers.ControlledScreen;
 import sample.controllers.ScreensController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
 
@@ -16,6 +20,7 @@ public class Main extends Application {
 	public static String screen1File = "/loginScreen.fxml";
 	public static String screen2ID = "loggedIn";
 	public static String screen2File = "/loggedInScreen.fxml";
+	public static List<ControlledScreen> listOfControllers= new ArrayList<>();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {

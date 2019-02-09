@@ -169,11 +169,12 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 			System.out.println(entry);
 		}
 		//////////////////////
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginScreen.fxml"));
-		Parent root = loader.load();
-		LoginController controller = loader.getController();
-		System.out.println(controller.temp);
+		System.out.println("printing temp");
+		for (ControlledScreen controlledScreen : Main.listOfControllers) {
+			if (controlledScreen instanceof LoginController) {
+				System.out.println(((LoginController) controlledScreen).temp);
+			}
+		}
 
 	}
 
