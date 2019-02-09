@@ -19,7 +19,9 @@ import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -97,7 +99,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 					System.out.println("connected to the server");
 					try {
 						setController();
-					} catch (IOException e) {
+					} catch (IOException | SmackException.NotConnectedException | InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
@@ -146,11 +148,11 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	}
 
 	@FXML
-	void refreshButtonClick(ActionEvent event) throws IOException {
+	void refreshButtonClick(ActionEvent event) throws IOException, SmackException.NotConnectedException, InterruptedException {
 		setController();
 	}
 
-	private void setController() throws IOException {
+	private void setController() throws IOException, SmackException.NotConnectedException, InterruptedException {
 		System.out.println("printing temp");
 		for (ControlledScreen controlledScreen : Main.listOfControllers) {
 			if (controlledScreen instanceof LoginController) {
@@ -163,6 +165,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		xmppSession.connection.disconnect();
 		//dodać listenera:
 		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
+		xmppSession.roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
 		xmppSession.roster.addRosterListener(new RosterListener() {
 
 			@Override
@@ -200,6 +203,8 @@ public class LoggedInController implements Initializable, ControlledScreen {
 				r.setVisible(true);
 			}
 		}
+		Presence p = new Presence(Presence.Type.available, "A ja not busy", 42, Presence.Mode.dnd);
+		xmppSession.connection.sendStanza(p);
 
 		xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		xmppSession.chatManager.addIncomingListener(new IncomingChatMessageListener() {
@@ -207,11 +212,26 @@ public class LoggedInController implements Initializable, ControlledScreen {
 				String name = getNameFromJid(entityBareJid);
 				conversationField.appendText(name + ": " + message.getBody() + "\n");
 				System.out.println("New message from: "+name + ": " + message.getBody() + "\n");
+				try {
+					xmppSession.roster.createEntry(entityBareJid,"login", new String[0]);
+				} catch (SmackException.NotLoggedInException |
+						SmackException.NoResponseException |
+						SmackException.NotConnectedException |
+						XMPPException.XMPPErrorException |
+						InterruptedException e) {
+					e.printStackTrace();
+				}
+//				System.out.println("his presence: " + xmppSession.roster.getPresence(entityBareJid));
 
 			}
 		});
 		System.out.println("started listening incoming messages");
-
+		System.out.println("Roster entries: ");
+		Roster roster = Roster.getInstanceFor(xmppSession.connection);
+		Collection<RosterEntry> entries = roster.getEntries();
+		for (RosterEntry entry : entries) {
+			System.out.println(entry);
+		}
 	}
 
 
