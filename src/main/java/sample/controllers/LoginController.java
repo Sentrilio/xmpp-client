@@ -54,7 +54,8 @@ public class LoginController implements Initializable, ControlledScreen {
 		System.out.println("haslo: " + xmppSession.userAccount.getPassword());
 
 		xmppSession.config = XMPPTCPConnectionConfiguration.builder()
-				.setUsernameAndPassword("username", "password")
+				.setUsernameAndPassword(xmppSession.userAccount.getLogin(), xmppSession.userAccount.getPassword())
+//				.setUsernameAndPassword("blabla1", "blabla2")
 				.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
 				.setCustomSSLContext(SSLContext.getDefault())
 				.setXmppDomain(xmppSession.xmppDomain)
@@ -64,7 +65,7 @@ public class LoginController implements Initializable, ControlledScreen {
 		xmppSession.connection = new XMPPTCPConnection(xmppSession.config);
 		try {
 			xmppSession.connection.connect();
-			xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
+//			xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("nie udalo sie połączyć z serwerem");
@@ -81,7 +82,7 @@ public class LoginController implements Initializable, ControlledScreen {
 			info.setText("Niepoprawny login lub hasło");
 			return;
 		}
-		xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
+//		xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		System.out.println(Main.screen2ID);
 		screensController.setScreen(Main.screen2ID);
 		System.out.println("Zalogowano!");

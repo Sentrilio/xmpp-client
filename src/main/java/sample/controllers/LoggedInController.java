@@ -14,6 +14,7 @@ import javafx.scene.layout.*;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
+import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
@@ -159,38 +160,38 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		System.out.println(xmppSession.userAccount.getLogin());
 		System.out.println(xmppSession.userAccount.getPassword());
 		// wylogowac
-//		xmppSession.connection.disconnect();
-//		//dodać listenera:
-//		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
-//		xmppSession.roster.addRosterListener(new RosterListener() {
-//
-//			@Override
-//			public void entriesAdded(Collection<Jid> collection) {
-//
-//			}
-//
-//			@Override
-//			public void entriesUpdated(Collection<Jid> collection) {
-//
-//			}
-//
-//			@Override
-//			public void entriesDeleted(Collection<Jid> collection) {
-//
-//			}
-//
-//			public void presenceChanged(Presence presence) {
-//				System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
-//			}
-//		});
-//
-//		try {
-//			xmppSession.connection.connect();
-//			xmppSession.connection.login(xmppSession.userAccount.getLogin(),xmppSession.userAccount.getPassword());
-//		} catch (XMPPException | SmackException | InterruptedException e) {
-//			System.out.println("something went wrong with logging user on the server");
-//			e.printStackTrace();
-//		}
+		xmppSession.connection.disconnect();
+		//dodać listenera:
+		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
+		xmppSession.roster.addRosterListener(new RosterListener() {
+
+			@Override
+			public void entriesAdded(Collection<Jid> collection) {
+
+			}
+
+			@Override
+			public void entriesUpdated(Collection<Jid> collection) {
+
+			}
+
+			@Override
+			public void entriesDeleted(Collection<Jid> collection) {
+
+			}
+
+			public void presenceChanged(Presence presence) {
+				System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
+			}
+		});
+
+		try {
+			xmppSession.connection.connect();
+			xmppSession.connection.login(xmppSession.userAccount.getLogin(),xmppSession.userAccount.getPassword());
+		} catch (XMPPException | SmackException | InterruptedException e) {
+			System.out.println("something went wrong with logging user on the server");
+			e.printStackTrace();
+		}
 
 		for (Region r : controls) {
 			if (r == refreshButton) {
@@ -199,6 +200,8 @@ public class LoggedInController implements Initializable, ControlledScreen {
 				r.setVisible(true);
 			}
 		}
+
+		xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		xmppSession.chatManager.addIncomingListener(new IncomingChatMessageListener() {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
@@ -208,7 +211,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			}
 		});
 		System.out.println("started listening incoming messages");
-		
+
 	}
 
 
