@@ -12,7 +12,6 @@ public class XMPPSession {
 	public XMPPTCPConnectionConfiguration config;
 	public XMPPTCPConnection connection;
 	public ChatManager chatManager;
-	public String login;
-	public String password;
+	public UserAccount userAccount;
 	public Roster roster;
 }

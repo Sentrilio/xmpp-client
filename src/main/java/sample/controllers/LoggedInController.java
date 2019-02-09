@@ -18,14 +18,12 @@ import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import sample.Main;
-import sample.XMPPClientSession;
 import sample.model.XMPPSession;
 
 import java.io.IOException;
@@ -158,8 +156,8 @@ public class LoggedInController implements Initializable, ControlledScreen {
 				this.xmppSession=((LoginController) controlledScreen).xmppSession;
 			}
 		}
-		System.out.println(xmppSession.login);
-		System.out.println(xmppSession.password);
+		System.out.println(xmppSession.userAccount.getLogin());
+		System.out.println(xmppSession.userAccount.getPassword());
 		// wylogowac
 		xmppSession.connection.disconnect();
 		//dodać listenera:
@@ -188,7 +186,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 		try {
 			xmppSession.connection.connect();
-			xmppSession.connection.login(xmppSession.login,xmppSession.password);
+			xmppSession.connection.login(xmppSession.userAccount.getLogin(),xmppSession.userAccount.getPassword());
 		} catch (XMPPException | SmackException | InterruptedException e) {
 			System.out.println("something went wrong with logging user on the server");
 			e.printStackTrace();

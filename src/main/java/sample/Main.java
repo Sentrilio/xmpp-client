@@ -9,7 +9,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import sample.controllers.ControlledScreen;
+import sample.controllers.LoginController;
 import sample.controllers.ScreensController;
+import sample.model.XMPPSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class Main extends Application {
 	public static String screen1File = "/loginScreen.fxml";
 	public static String screen2ID = "loggedIn";
 	public static String screen2File = "/loggedInScreen.fxml";
-	public static List<ControlledScreen> listOfControllers= new ArrayList<>();
+	public static List<ControlledScreen> listOfControllers = new ArrayList<>();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -39,17 +41,21 @@ public class Main extends Application {
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent we) {
 				System.out.println("Exit window button clicked");
-				try {
-					if (XMPPClientSession.connection != null) {
-						XMPPClientSession.connection.disconnect();
-						System.out.println("Disconnected client");
-					}else{
-						System.out.println("There was no connection");
+				for (ControlledScreen controlledScreen : Main.listOfControllers) {
+					if (controlledScreen instanceof LoginController) {
+						try {
+							XMPPSession xmppSession = ((LoginController) controlledScreen).xmppSession;
+							if (xmppSession.connection != null) {
+								xmppSession.connection.disconnect();
+								System.out.println("Disconnected client");
+							} else {
+								System.out.println("There was no connection");
+							}
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
-
 			}
 		});
 

@@ -2,22 +2,29 @@ package sample.model;
 
 public class UserAccount {
 
-	private String loginUser;
-	private String passwordUser;
+	private String login;
+	private String password;
 
 	public UserAccount(){}
 
-	public UserAccount(String loginUser, String passwordUser) {
-		this.loginUser = loginUser;
-		this.passwordUser = passwordUser;
+	public UserAccount(String login, String password) {
+		this.login = login;
+		this.password = password;
 	}
 
-	public String getLoginUser() {
-		return loginUser;
+	public String getLogin() {
+		return login;
 	}
 
-	public String getPasswordUser() {
-		return passwordUser;
+	public String getPassword() {
+		return password;
 	}
 
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }
