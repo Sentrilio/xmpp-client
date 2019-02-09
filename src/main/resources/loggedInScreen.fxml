@@ -8,15 +8,15 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="536.0" prefWidth="853.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.LoggedInController">
    <children>
-      <Button fx:id="logoutButton" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="72.0" text="Log out" />
+      <Button fx:id="logoutButton" focusTraversable="false" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="72.0" text="Log out" />
       <VBox fx:id="VBox" layoutX="222.0" layoutY="119.0" prefHeight="395.0" prefWidth="585.0">
          <children>
             <TextArea fx:id="conversationField" editable="false" focusTraversable="false" prefHeight="361.0" prefWidth="585.0" />
             <TextField fx:id="sendTextField" prefHeight="12.0" prefWidth="585.0" />
          </children>
       </VBox>
-      <TextField fx:id="destName" layoutX="22.0" layoutY="437.0" promptText="name of friend" />
-      <Button fx:id="sendButton" layoutX="155.0" layoutY="483.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
-      <Button fx:id="refreshButton" layoutX="333.0" layoutY="45.0" mnemonicParsing="false" onAction="#refreshButtonClick" prefHeight="58.0" prefWidth="214.0" text="Connect to the server" />
+      <TextField fx:id="destName" focusTraversable="false" layoutX="22.0" layoutY="437.0" promptText="name of friend" />
+      <Button fx:id="sendButton" focusTraversable="false" layoutX="155.0" layoutY="483.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
+      <Button fx:id="refreshButton" focusTraversable="false" layoutX="333.0" layoutY="45.0" mnemonicParsing="false" onAction="#refreshButtonClick" prefHeight="58.0" prefWidth="214.0" text="Connect to the server" />
    </children>
 </AnchorPane>

@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sample/controllers/LoggedInController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sample/controllers/LoggedInController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sample/controllers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sample/controllers/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/loggedInScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/loggedInScreen.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/loggedInScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/loggedInScreen.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sample/controllers/LoggedInController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sample/controllers/LoggedInController$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sample/controllers/LoggedInController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sample/controllers/LoggedInController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sample/controllers/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sample/controllers/LoginController.class" afterDir="false" />
     </list>
     <ignored path="JavaFxApplication.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -93,13 +86,13 @@
         <counts>
           <entry key="dummy" value="38" />
           <entry key="fxml" value="17" />
-          <entry key="java" value="7147" />
+          <entry key="java" value="7222" />
           <entry key="xml" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="7147" />
+          <entry key="JAVA" value="7222" />
           <entry key="PLAIN_TEXT" value="38" />
           <entry key="XML" value="26" />
         </counts>
@@ -126,8 +119,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/sample/controllers/LoggedInController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="67" lean-forward="true" selection-start-line="67" selection-end-line="67" />
+            <state relative-caret-position="141">
+              <caret line="138" column="5" lean-forward="true" selection-start-line="138" selection-start-column="5" selection-end-line="138" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2981#2982#0" expanded="true" />
@@ -235,6 +228,7 @@
       <find>key</find>
       <find>replace</find>
       <find>replace(</find>
+      <find>anchorPane</find>
     </findStrings>
   </component>
   <component name="FindManager">
@@ -360,7 +354,7 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="OverrideImplement.combined" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1549727728352" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1549727834313" />
     <property name="dynamic.classpath" value="false" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java" />
@@ -491,12 +485,12 @@
       <window_info id="Image Layers" order="1" />
       <window_info id="UI Designer" order="2" />
       <window_info id="Capture Tool" order="3" />
-      <window_info active="true" content_ui="combo" id="Project" order="4" sideWeight="0.6703755" visible="true" weight="0.20895523" />
+      <window_info content_ui="combo" id="Project" order="4" sideWeight="0.6703755" visible="true" weight="0.20895523" />
       <window_info id="Structure" order="5" weight="0.25" />
       <window_info id="Favorites" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.38394794" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.38394794" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -870,8 +864,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sample/controllers/LoggedInController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="67" lean-forward="true" selection-start-line="67" selection-end-line="67" />
+        <state relative-caret-position="141">
+          <caret line="138" column="5" lean-forward="true" selection-start-line="138" selection-start-column="5" selection-end-line="138" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2981#2982#0" expanded="true" />
