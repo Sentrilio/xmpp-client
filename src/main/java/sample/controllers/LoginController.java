@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LoginController extends XMPPClientSession implements Initializable, ControlledScreen {
 
@@ -47,6 +45,10 @@ public class LoginController extends XMPPClientSession implements Initializable,
 
 	@FXML
 	void logInButtonClick(ActionEvent event) throws IOException, NoSuchAlgorithmException {
+		loginUser();
+	}
+
+	private void loginUser() throws XmppStringprepException, NoSuchAlgorithmException {
 		String login = loginTextField.getText();
 		String password = passwordTextField.getText();
 
@@ -100,6 +102,15 @@ public class LoginController extends XMPPClientSession implements Initializable,
 	}
 
 	public void initialize(URL location, ResourceBundle resources) {
-
+		anchorPane.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				System.out.println("kliknięto enter");
+				try {
+					loginUser();
+				} catch (XmppStringprepException | NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }
