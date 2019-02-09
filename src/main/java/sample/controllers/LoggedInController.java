@@ -12,24 +12,30 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import sample.Main;
 import sample.XMPPClientSession;
+import sample.model.XMPPSession;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class LoggedInController extends XMPPClientSession implements Initializable, ControlledScreen {
+public class LoggedInController implements Initializable, ControlledScreen {
 
 	ScreensController screensController;
+	XMPPSession xmppSession;
 
 	@FXML
 	private Button refreshButton;
@@ -118,15 +124,15 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 		sendTextField.clear();
 		conversationField.appendText("me: " + message + "\n");
 		String jidString = destName.getText();
-		jidString += "@" + xmppDomain;
+		jidString += "@" + xmppSession.xmppDomain;
 		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
-		Chat chat = chatManager.chatWith(jid);
+		Chat chat = xmppSession.chatManager.chatWith(jid);
 		chat.send(message);
 	}
 
 	public void disconnect() {
 		try {
-			connection.disconnect();
+			xmppSession.connection.disconnect();
 			System.out.println("disconnected");
 			screensController.setScreen(Main.screen1ID);
 		} catch (Exception e) {
@@ -146,6 +152,48 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 	}
 
 	private void setController() throws IOException {
+		System.out.println("printing temp");
+		for (ControlledScreen controlledScreen : Main.listOfControllers) {
+			if (controlledScreen instanceof LoginController) {
+				this.xmppSession=((LoginController) controlledScreen).xmppSession;
+			}
+		}
+		System.out.println(xmppSession.login);
+		System.out.println(xmppSession.password);
+		// wylogowac
+		xmppSession.connection.disconnect();
+		//dodać listenera:
+		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
+		xmppSession.roster.addRosterListener(new RosterListener() {
+
+			@Override
+			public void entriesAdded(Collection<Jid> collection) {
+
+			}
+
+			@Override
+			public void entriesUpdated(Collection<Jid> collection) {
+
+			}
+
+			@Override
+			public void entriesDeleted(Collection<Jid> collection) {
+
+			}
+
+			public void presenceChanged(Presence presence) {
+				System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
+			}
+		});
+
+		try {
+			xmppSession.connection.connect();
+			xmppSession.connection.login(xmppSession.login,xmppSession.password);
+		} catch (XMPPException | SmackException | InterruptedException e) {
+			System.out.println("something went wrong with logging user on the server");
+			e.printStackTrace();
+		}
+
 		for (Region r : controls) {
 			if (r == refreshButton) {
 				r.setVisible(false);
@@ -153,7 +201,7 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 				r.setVisible(true);
 			}
 		}
-		chatManager.addIncomingListener(new IncomingChatMessageListener() {
+		xmppSession.chatManager.addIncomingListener(new IncomingChatMessageListener() {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
 				conversationField.appendText(name + ": " + message.getBody() + "\n");
@@ -163,19 +211,11 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 		System.out.println("started listening incoming messages");
 
 		System.out.println("printing rosters:");
-		Roster roster = Roster.getInstanceFor(connection);
-		Collection<RosterEntry> entries = roster.getEntries();
-		for (RosterEntry entry : entries) {
-			System.out.println(entry);
-		}
-		//////////////////////
-		System.out.println("printing temp");
-		for (ControlledScreen controlledScreen : Main.listOfControllers) {
-			if (controlledScreen instanceof LoginController) {
-				System.out.println(((LoginController) controlledScreen).temp);
-			}
-		}
-
+//		roster = Roster.getInstanceFor(xmppSession.connection);
+//		Collection<RosterEntry> entries = roster.getEntries();
+//		for (RosterEntry entry : entries) {
+//			System.out.println(entry);
+//		}
 	}
 
 

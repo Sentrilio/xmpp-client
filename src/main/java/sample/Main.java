@@ -52,6 +52,7 @@ public class Main extends Application {
 
 			}
 		});
+
 //        Parent root = FXMLLoader.load(getClass().getResource("/loginScreen.fxml"));
 //        primaryStage.setTitle("Hello World");
 //        primaryStage.setScene(new Scene(root, 800, 600));
