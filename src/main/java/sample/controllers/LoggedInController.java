@@ -1,40 +1,31 @@
 package sample.controllers;
 
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.util.Duration;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import sample.Main;
 import sample.XMPPClientSession;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class LoggedInController extends XMPPClientSession implements Initializable, ControlledScreen {
 
@@ -77,17 +68,33 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 		controls.add(conversationField);
 		controls.add(sendTextField);
 		for (Region r : controls) {
-			if(r != refreshButton){
+			if (r != refreshButton) {
 				r.setVisible(false);
 			}
 		}
 		anchorPane.setOnKeyPressed(event -> {
-			if(event.getCode() == KeyCode.ENTER){
+			if (event.getCode() == KeyCode.ENTER) {
 				System.out.println("kliknięto enter");
 				try {
-					sendMessage();
+					if (!refreshButton.isVisible()) {
+						System.out.println("Proba wysłania wiadomości");
+						sendMessage();
+					}
 				} catch (XmppStringprepException | SmackException.NotConnectedException | InterruptedException e) {
 					e.printStackTrace();
+				}
+			}
+
+		});
+		refreshButton.setOnKeyReleased(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				if (refreshButton.isVisible()) {
+					System.out.println("connected to the server");
+					try {
+						setController();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
@@ -134,26 +141,40 @@ public class LoggedInController extends XMPPClientSession implements Initializab
 	}
 
 	@FXML
-	void refreshButtonClick(ActionEvent event) {
-		setControlVariables();
+	void refreshButtonClick(ActionEvent event) throws IOException {
+		setController();
 	}
 
-	private void setControlVariables() {
+	private void setController() throws IOException {
 		for (Region r : controls) {
-			if(r == refreshButton){
+			if (r == refreshButton) {
 				r.setVisible(false);
-			}else{
+			} else {
 				r.setVisible(true);
 			}
 		}
 		chatManager.addIncomingListener(new IncomingChatMessageListener() {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
-				conversationField.appendText(name + ": " + message.getBody() + "\n");// dodać do konkretnej historii
+				conversationField.appendText(name + ": " + message.getBody() + "\n");
 
 			}
 		});
 		System.out.println("started listening incoming messages");
+
+		System.out.println("printing rosters:");
+		Roster roster = Roster.getInstanceFor(connection);
+		Collection<RosterEntry> entries = roster.getEntries();
+		for (RosterEntry entry : entries) {
+			System.out.println(entry);
+		}
+		//////////////////////
+
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginScreen.fxml"));
+		Parent root = loader.load();
+		LoginController controller = loader.getController();
+		System.out.println(controller.temp);
+
 	}
 
 

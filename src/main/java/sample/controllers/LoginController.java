@@ -32,6 +32,9 @@ public class LoginController extends XMPPClientSession implements Initializable,
 
 	ScreensController screensController;
 
+
+	String temp= " siemaneczko";
+
 	@FXML
 	private Label info;
 	@FXML
@@ -49,6 +52,7 @@ public class LoginController extends XMPPClientSession implements Initializable,
 	}
 
 	private void loginUser() throws XmppStringprepException, NoSuchAlgorithmException {
+		this.temp = "elo";
 		String login = loginTextField.getText();
 		String password = passwordTextField.getText();
 
@@ -112,5 +116,6 @@ public class LoginController extends XMPPClientSession implements Initializable,
 				}
 			}
 		});
+
 	}
 }
