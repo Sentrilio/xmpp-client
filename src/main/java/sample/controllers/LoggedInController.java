@@ -2,6 +2,7 @@ package sample.controllers;
 
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,7 +21,6 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -37,6 +37,8 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	ScreensController screensController;
 	XMPPSession xmppSession;
 
+	@FXML
+	private Button removeFriendButton;
 	@FXML
 	private TextField nameFriendField;
 
@@ -57,7 +59,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private VBox VBoxConversation;
 
 
-	private String dest = "";
+	private String nameFromSelectedButton = "";
 	private String status = "";
 
 	@FXML
@@ -74,60 +76,48 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private HashMap<String, TextArea> mapOfConversations = new HashMap<>();
 	private HashMap<String, String> mapOfFriends = new HashMap<>();
 
+
 	void removeEntry() {
+		System.out.println("name from button: " + nameFromSelectedButton);
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
-			try {
-				xmppSession.roster.removeEntry(entry);
-			} catch (SmackException.NotLoggedInException |
-					SmackException.NoResponseException |
-					SmackException.NotConnectedException |
-					XMPPException.XMPPErrorException |
-					InterruptedException e) {
-				e.printStackTrace();
+			if (entry.getName().equals(nameFromSelectedButton)) {
+				try {
+					System.out.println("Removing entry: " + entry.getName());
+					xmppSession.roster.removeEntry(entry);
+				} catch (SmackException.NotLoggedInException |
+						SmackException.NoResponseException |
+						SmackException.NotConnectedException |
+						XMPPException.XMPPErrorException |
+						InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			System.out.println("entry name: " + entry.getJid());
+
+
 		}
 	}
 
 	@FXML
-	void addFriendButtonClick(ActionEvent event) throws XmppStringprepException, SmackException.NotLoggedInException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+	void removeFriendButtonClick(ActionEvent event) {
+		removeEntry();
+		clearFriendList();
+		fillFriendList();
+	}
 
+	@FXML
+	void addFriendButtonClick(ActionEvent event) throws XmppStringprepException, SmackException.NotLoggedInException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
 		String jidString = nameFriendField.getText();
 		if (!jidString.equals("")) {
 			jidString += "@" + xmppSession.xmppDomain;
 			EntityBareJid jid = JidCreate.entityBareFrom(jidString);
 			xmppSession.roster.createEntry(jid, nameFriendField.getText(), new String[0]);
 			System.out.println("Utworzono entry");
-		}else{
+		} else {
 			System.out.println("Wprowadź nazwę kumpla");
 		}
-
-
-//		xmppSession.chatManager.removeEntry(new RosterEntry());
-//		xmppSession.roster.createE
-//		if (!nameFriendField.getText().equals("")) {
-//			Collection<RosterEntry> entries = xmppSession.roster.getEntries();
-//			for (RosterEntry entry : entries) {
-//				try {
-//					xmppSession.roster.createEntry(new Bar);
-//					xmppSession.roster.createEntry(entry.getJid(), "login", new String[0]);
-//				} catch (SmackException.NotLoggedInException |
-//						SmackException.NoResponseException |
-//						SmackException.NotConnectedException |
-//						XMPPException.XMPPErrorException |
-//						InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//				System.out.println("entry name: " + entry.getJid());
-//			}
-//		}
-//			xmppSession.roster.createEntry();
-//			xmppSession.presence.setStatus();
-//		xmppSession.connection.sendStanza(xmppSession.presence);
-//		xmppSession.roster.getEntries();
-		////
-
+		clearFriendList();
+		fillFriendList();
 	}
 
 	@FXML
@@ -145,8 +135,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		controls.add(sendButton);
 		controls.add(sendButton);
 		controls.add(VBoxConversation);
-//		controls.add(destName);
-//		controls.add(conversationField);
 		controls.add(sendTextField);
 //		for (Region r : controls) {}
 
@@ -177,9 +165,9 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private void sendMessage() throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
 		String message = sendTextField.getText();
 		sendTextField.clear();
-		mapOfConversations.get(dest).appendText("me: " + message + "\n");
+		mapOfConversations.get(nameFromSelectedButton).appendText("me: " + message + "\n");
 //		conversationField.appendText("me: " + message + "\n");
-		String jidString = getNameFromFriendList(dest);
+		String jidString = getNameFromFriendList(nameFromSelectedButton);
 		jidString += "@" + xmppSession.xmppDomain;
 		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
 		Chat chat = xmppSession.chatManager.chatWith(jid);
@@ -271,47 +259,50 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
 				String name = getNameFromJid(entityBareJid);
 				mapOfConversations.get(name).appendText(name + ": " + message.getBody() + "\n");
-//				conversationField.appendText(name + ": " + message.getBody() + "\n");
 				System.out.println("New message from: " + name + ": " + message.getBody() + "\n");
-//				try {
-//					xmppSession.roster.createEntry(entityBareJid, "login", new String[0]);
-//				} catch (SmackException.NotLoggedInException |
-//						SmackException.NoResponseException |
-//						SmackException.NotConnectedException |
-//						XMPPException.XMPPErrorException |
-//						InterruptedException e) {
-//					e.printStackTrace();
-//				}
 				System.out.println("his presence: " + xmppSession.roster.getPresence(entityBareJid));
-
 			}
 		});
 		System.out.println("started listening incoming messages");
 		System.out.println("Roster entries: ");
 		xmppSession.presence = new Presence(Presence.Type.available);
 		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
+		clearFriendList();
+		fillFriendList();
+		presenceComboBox.getItems().addAll(
+				"available",
+				"chat",
+				"away",
+				"xa",
+				"dnd"
+		);
+
+	}
+
+	private void clearFriendList() {
+		VBoxFriendList.getChildren().clear();
+	}
+
+	private void fillFriendList() {
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
-
 			Button button = new Button();
 			button.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
-					dest = getNameFromFriendList(button.getText());
-					TextArea conversation = mapOfConversations.get(dest);
+					nameFromSelectedButton = getNameFromFriendList(button.getText());
+					TextArea conversation = mapOfConversations.get(nameFromSelectedButton);
 					if (VBoxConversation.getChildren().isEmpty()) {
 						VBoxConversation.getChildren().add(conversation);
 					} else {
 						VBoxConversation.getChildren().remove(0);
 						VBoxConversation.getChildren().add(conversation);
 					}
-//					conversation.setPrefSize(Double.MAX_VALUE,Double.MAX_VALUE);
 					conversation.prefWidthProperty().bind(VBoxConversation.widthProperty());
 					conversation.prefHeightProperty().bind(VBoxConversation.heightProperty());
-					System.out.println("clicked" + dest);
+					System.out.println("clicked" + nameFromSelectedButton);
 				}
 			});
 			Presence s = xmppSession.roster.getPresence(entry.getJid());
-
 			String name = getNameFromJid((EntityBareJid) entry.getJid());
 			String mode = s.getMode().toString();
 			String status = s.getStatus();
@@ -323,21 +314,11 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			}
 			TextArea textArea = new TextArea();
 			mapOfConversations.put(name, textArea);
-//			VBoxConversation.getChildren().
-//			VBoxConversation.getChildren().add(textArea);
 			VBoxFriendList.getChildren().add(button);
-			System.out.println("entry: " + entry);
 		}
-
-		presenceComboBox.getItems().addAll(
-				"available",
-				"chat",
-				"away",
-				"xa",
-				"dnd"
-		);
-
 	}
+
+
 
 	@FXML
 	void presenceChanged(ActionEvent event) throws SmackException.NotConnectedException, InterruptedException {

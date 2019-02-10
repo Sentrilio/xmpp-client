@@ -29,5 +29,6 @@
       <TextField fx:id="sendTextField" layoutX="270.0" layoutY="483.0" prefHeight="31.0" prefWidth="604.0" />
       <Button focusTraversable="false" layoutX="789.0" layoutY="80.0" mnemonicParsing="false" onAction="#setStatusButtonClick" text="Set status" />
       <Button fx:id="addFriendButton" layoutX="16.0" layoutY="483.0" mnemonicParsing="false" onAction="#addFriendButtonClick" text="Add friend" />
+      <Button fx:id="removeFriendButton" layoutX="131.0" layoutY="29.0" mnemonicParsing="false" onAction="#removeFriendButtonClick" prefHeight="31.0" prefWidth="119.0" text="Remove friend" />
    </children>
 </AnchorPane>
