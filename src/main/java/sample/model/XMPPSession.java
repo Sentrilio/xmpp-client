@@ -1,6 +1,7 @@
 package sample.model;
 
 import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -14,4 +15,5 @@ public class XMPPSession {
 	public ChatManager chatManager;
 	public UserAccount userAccount;
 	public Roster roster;
+	public Presence presence;
 }

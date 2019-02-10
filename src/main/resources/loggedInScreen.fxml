@@ -16,9 +16,10 @@
       <Button fx:id="sendButton" focusTraversable="false" layoutX="188.0" layoutY="483.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
       <Label layoutX="33.0" layoutY="85.0" text="Friend List" />
       <ComboBox fx:id="presenceComboBox" layoutX="131.0" layoutY="80.0" onAction="#presenceChanged" prefHeight="31.0" prefWidth="111.0" promptText="available" />
+      <TextField fx:id="statusTextField" layoutX="270.0" layoutY="80.0" prefHeight="31.0" prefWidth="519.0" promptText="Write your status..." />
       <ScrollPane layoutX="16.0" layoutY="119.0" prefHeight="319.0" prefWidth="226.0">
          <content>
-            <VBox fx:id="VBoxFriendList" prefHeight="317.0" prefWidth="224.0" />
+            <VBox fx:id="VBoxFriendList" prefHeight="317.0" prefWidth="985.0" />
          </content>
       </ScrollPane>
       <ScrollPane layoutX="270.0" layoutY="119.0" prefHeight="358.0" prefWidth="604.0">
@@ -31,5 +32,6 @@
          </content>
       </ScrollPane>
       <TextField fx:id="sendTextField" layoutX="270.0" layoutY="483.0" prefHeight="31.0" prefWidth="604.0" />
+      <Button focusTraversable="false" layoutX="789.0" layoutY="80.0" mnemonicParsing="false" onAction="#setStatusButtonClick" text="Set status" />
    </children>
 </AnchorPane>

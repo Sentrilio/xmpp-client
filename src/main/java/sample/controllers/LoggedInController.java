@@ -1,10 +1,12 @@
 package sample.controllers;
 
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -35,6 +37,9 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	XMPPSession xmppSession;
 
 	@FXML
+	private TextField statusTextField;
+
+	@FXML
 	private ComboBox<String> presenceComboBox;
 
 	@FXML
@@ -42,14 +47,14 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	@FXML
 	private Button sendButton;
-
 	@FXML
 	private VBox VBox;
 
-//	@FXML
-//	private TextField destName;
+	@FXML
+	private TextField destName;
 
-	private String dest=xmppSession.userAccount.getLogin();//default to himself
+	private String dest = "";
+	private String status = "";
 
 	@FXML
 	public TextArea conversationField;
@@ -69,12 +74,21 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private HashMap<String, String> mapOfFriends = new HashMap<>();
 
 	@FXML
+	void setStatusButtonClick(ActionEvent event) throws SmackException.NotConnectedException, InterruptedException {
+		if (!statusTextField.getText().equals("")) {
+			status = statusTextField.getText();
+			xmppSession.presence.setStatus(status);
+		}
+		xmppSession.connection.sendStanza(xmppSession.presence);
+	}
+
+	@FXML
 	public void initialize(URL location, ResourceBundle resources) {
 		controls.add(logoutButton);
 		controls.add(sendButton);
 		controls.add(sendButton);
-//		controls.add(VBox);
-//		controls.add(destName);
+		controls.add(VBox);
+		controls.add(destName);
 		controls.add(conversationField);
 		controls.add(sendTextField);
 //		for (Region r : controls) {}
@@ -107,7 +121,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		String message = sendTextField.getText();
 		sendTextField.clear();
 		conversationField.appendText("me: " + message + "\n");
-//		String jidString = destName.getText();
 		String jidString = getNameFromFriendList(dest);
 		jidString += "@" + xmppSession.xmppDomain;
 		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
@@ -130,17 +143,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	public void setScreenParent(ScreensController screenParent) {
 		screensController = screenParent;
 	}
-	public String getNameFromFriendList(String nameWithStatus){
-		String name = "";
-		for (char c : nameWithStatus.toCharArray()) {
-			if (c != '(') {
-				name += c;
-			} else {
-				break;
-			}
-		}
-		return name;
-	}
+
 
 	public void setController() throws IOException, SmackException.NotConnectedException, InterruptedException {
 
@@ -171,7 +174,29 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			}
 
 			public void presenceChanged(Presence presence) {
-				System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
+				System.out.println("Presence changed: " + getNameFromPresenceString(presence.getFrom().toString()));
+
+				for (Node nodeIn : VBoxFriendList.getChildren()) {
+					String nameFromButton = getNameFromFriendList(((Button) nodeIn).getText());
+					String nameFromChangedPresence = getNameFromPresenceString(presence.getFrom().toString());
+					if (nameFromButton.equals(nameFromChangedPresence))
+						try {
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									// Update UI here.
+									if (presence.getStatus()== null) {
+										((Button) nodeIn).setText(nameFromButton + "(" + presence.getMode() + ")");
+									}else{
+										((Button) nodeIn).setText(nameFromButton + "(" + presence.getMode() + ") " + presence.getStatus());
+									}
+
+								}
+							});
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+				}
 			}
 		});
 
@@ -182,16 +207,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			System.out.println("something went wrong with logging user on the server");
 			e.printStackTrace();
 		}
-
-		for (Region r : controls) {
-//			if (r == refreshButton) {
-//				r.setVisible(false);
-//			} else {
-			r.setVisible(true);
-//			}
-		}
-		Presence p = new Presence(Presence.Type.available, "I'm not busy", 42, Presence.Mode.dnd);
-		xmppSession.connection.sendStanza(p);
 
 		xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		xmppSession.chatManager.addIncomingListener(new IncomingChatMessageListener() {
@@ -214,32 +229,27 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		});
 		System.out.println("started listening incoming messages");
 		System.out.println("Roster entries: ");
+		xmppSession.presence = new Presence(Presence.Type.available);
 		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
 			Button button = new Button();
-//			button.setOnAction(new EventHandler<ActionEvent>() {
-//				public void handle(ActionEvent e) {
-//					dest=getNameFromFriendList(button.getText());
-//					System.out.println("clicked" + dest);
-//				}
-//			});
+			button.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent e) {
+					dest = getNameFromFriendList(button.getText());
+					System.out.println("clicked" + dest);
+				}
+			});
 			Presence s = xmppSession.roster.getPresence(entry.getJid());
-			button.setText(getNameFromJid((EntityBareJid) entry.getJid()) + "(" + s.getStatus()+")");
+			if (s.getStatus() == null) {
+				button.setText(getNameFromJid((EntityBareJid) entry.getJid()) + "(" + s.getMode() + ")");
+			} else {
+				button.setText(getNameFromJid((EntityBareJid) entry.getJid()) + "(" + s.getMode() + ") " + s.getStatus());
+			}
 			VBoxFriendList.getChildren().add(button);
 			System.out.println("entry: " + entry);
 		}
 
-//		for (int i = 0; i < 20; i++) {
-//			Button button = new Button();
-//			button.setOnAction(new EventHandler<ActionEvent>() {
-//				public void handle(ActionEvent e) {
-//					System.out.println("clicked" + button.getText());
-//				}
-//			});
-//			button.setText("test " + i);
-//			VBoxFriendList.getChildren().add(button);
-//		}
 		presenceComboBox.getItems().addAll(
 				"available",
 				"chat",
@@ -254,10 +264,15 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	void presenceChanged(ActionEvent event) throws SmackException.NotConnectedException, InterruptedException {
 		System.out.println("Presence changed!");
 		System.out.println(presenceComboBox.getValue());
-		Presence p = new Presence(Presence.Type.available, "I'm not busy", 42, Presence.Mode.valueOf(presenceComboBox.getValue()));
-		xmppSession.connection.sendStanza(p);
-//		presenceMenu.setText();
-//		presenceMenu.setText(presenceMenu.getUserData().toString());
+		xmppSession.presence.setMode(Presence.Mode.fromString(presenceComboBox.getValue()));
+		xmppSession.presence.setPriority(50);
+		xmppSession.presence.setStatus(status);
+		System.out.println("type: " + xmppSession.presence.getType());
+		System.out.println("status: " + xmppSession.presence.getStatus());
+		System.out.println("priority: " + xmppSession.presence.getPriority());
+		System.out.println("mode: " + xmppSession.presence.getMode());
+		xmppSession.connection.sendStanza(xmppSession.presence);
+
 	}
 
 
@@ -273,6 +288,29 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		return name;
 	}
 
+	public String getNameFromPresenceString(String FromPresenceString) {
+		String name = "";
+		for (char c : FromPresenceString.toCharArray()) {
+			if (c != '@') {
+				name += c;
+			} else {
+				break;
+			}
+		}
+		return name;
+	}
+
+	public String getNameFromFriendList(String nameWithStatus) {
+		String name = "";
+		for (char c : nameWithStatus.toCharArray()) {
+			if (c != '(') {
+				name += c;
+			} else {
+				break;
+			}
+		}
+		return name;
+	}
 
 
 }
