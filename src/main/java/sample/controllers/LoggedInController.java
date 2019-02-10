@@ -39,6 +39,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	@FXML
 	private TextField nameFriendField;
+
 	@FXML
 	private Button addFriendButton;
 	@FXML
@@ -55,14 +56,9 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	@FXML
 	private VBox VBoxConversation;
 
-	@FXML
-	private TextField destName;
 
 	private String dest = "";
 	private String status = "";
-
-//	@FXML
-//	public TextArea conversationField;
 
 	@FXML
 	private TextField sendTextField;
@@ -78,19 +74,59 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private HashMap<String, TextArea> mapOfConversations = new HashMap<>();
 	private HashMap<String, String> mapOfFriends = new HashMap<>();
 
-	@FXML
-	void addFriendButtonClick(ActionEvent event) {
-//		if (!nameFriendField.getText().equals("")) {
+	void removeEntry() {
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
-			System.out.println("entry name: " + entry.getName());
+			try {
+				xmppSession.roster.removeEntry(entry);
+			} catch (SmackException.NotLoggedInException |
+					SmackException.NoResponseException |
+					SmackException.NotConnectedException |
+					XMPPException.XMPPErrorException |
+					InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println("entry name: " + entry.getJid());
 		}
+	}
+
+	@FXML
+	void addFriendButtonClick(ActionEvent event) throws XmppStringprepException, SmackException.NotLoggedInException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+
+		String jidString = nameFriendField.getText();
+		if (!jidString.equals("")) {
+			jidString += "@" + xmppSession.xmppDomain;
+			EntityBareJid jid = JidCreate.entityBareFrom(jidString);
+			xmppSession.roster.createEntry(jid, nameFriendField.getText(), new String[0]);
+			System.out.println("Utworzono entry");
+		}else{
+			System.out.println("Wprowadź nazwę kumpla");
+		}
+
+
+//		xmppSession.chatManager.removeEntry(new RosterEntry());
+//		xmppSession.roster.createE
+//		if (!nameFriendField.getText().equals("")) {
+//			Collection<RosterEntry> entries = xmppSession.roster.getEntries();
+//			for (RosterEntry entry : entries) {
+//				try {
+//					xmppSession.roster.createEntry(new Bar);
+//					xmppSession.roster.createEntry(entry.getJid(), "login", new String[0]);
+//				} catch (SmackException.NotLoggedInException |
+//						SmackException.NoResponseException |
+//						SmackException.NotConnectedException |
+//						XMPPException.XMPPErrorException |
+//						InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//				System.out.println("entry name: " + entry.getJid());
+//			}
+//		}
 //			xmppSession.roster.createEntry();
 //			xmppSession.presence.setStatus();
-//		}
 //		xmppSession.connection.sendStanza(xmppSession.presence);
 //		xmppSession.roster.getEntries();
-
+		////
 
 	}
 
@@ -109,7 +145,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		controls.add(sendButton);
 		controls.add(sendButton);
 		controls.add(VBoxConversation);
-		controls.add(destName);
+//		controls.add(destName);
 //		controls.add(conversationField);
 		controls.add(sendTextField);
 //		for (Region r : controls) {}
