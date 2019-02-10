@@ -12,7 +12,7 @@
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.LoggedInController">
    <children>
       <Button fx:id="logoutButton" focusTraversable="false" layoutX="802.0" layoutY="29.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="72.0" text="Log out" />
-      <TextField fx:id="destName" layoutX="16.0" layoutY="446.0" prefHeight="31.0" prefWidth="226.0" promptText="name of friend" />
+      <TextField layoutX="16.0" layoutY="446.0" prefHeight="31.0" prefWidth="226.0" promptText="name of friend" />
       <Button fx:id="sendButton" focusTraversable="false" layoutX="188.0" layoutY="483.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
       <Label layoutX="33.0" layoutY="85.0" text="Friend List" />
       <ComboBox fx:id="presenceComboBox" layoutX="131.0" layoutY="80.0" onAction="#presenceChanged" prefHeight="31.0" prefWidth="111.0" promptText="available" />
