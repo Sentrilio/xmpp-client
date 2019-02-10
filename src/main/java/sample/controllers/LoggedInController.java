@@ -2,7 +2,6 @@ package sample.controllers;
 
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -29,6 +28,7 @@ import sample.Main;
 import sample.model.XMPPSession;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
@@ -36,14 +36,12 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	ScreensController screensController;
 	XMPPSession xmppSession;
+	private String nameFromSelectedButton = "";
+	private String status = "";
 
-	@FXML
-	private Button removeFriendButton;
 	@FXML
 	private TextField nameFriendField;
 
-	@FXML
-	private Button addFriendButton;
 	@FXML
 	private TextField statusTextField;
 
@@ -51,16 +49,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private ComboBox<String> presenceComboBox;
 
 	@FXML
-	private Button logoutButton;
-
-	@FXML
-	private Button sendButton;
-	@FXML
 	private VBox VBoxConversation;
-
-
-	private String nameFromSelectedButton = "";
-	private String status = "";
 
 	@FXML
 	private TextField sendTextField;
@@ -71,13 +60,13 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	@FXML
 	private VBox VBoxFriendList;
 
-	private List<Region> controls = new ArrayList<>();
-
+	//	private List<Region> controls = new ArrayList<>();
 	private HashMap<String, TextArea> mapOfConversations = new HashMap<>();
-	private HashMap<String, String> mapOfFriends = new HashMap<>();
+//	private HashMap<String, String> mapOfFriends = new HashMap<>();
 
 
 	void removeEntry() {
+
 		System.out.println("name from button: " + nameFromSelectedButton);
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
@@ -93,16 +82,27 @@ public class LoggedInController implements Initializable, ControlledScreen {
 					e.printStackTrace();
 				}
 			}
-
-
 		}
 	}
 
 	@FXML
 	void removeFriendButtonClick(ActionEvent event) {
 		removeEntry();
-		clearFriendList();
-		fillFriendList();
+//		refreshFriendList();
+	}
+
+	private void refreshFriendList() {
+		try {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					clearFriendList();
+					fillFriendList();
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
@@ -116,8 +116,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		} else {
 			System.out.println("Wprowadź nazwę kumpla");
 		}
-		clearFriendList();
-		fillFriendList();
 	}
 
 	@FXML
@@ -131,11 +129,11 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	@FXML
 	public void initialize(URL location, ResourceBundle resources) {
-		controls.add(logoutButton);
-		controls.add(sendButton);
-		controls.add(sendButton);
-		controls.add(VBoxConversation);
-		controls.add(sendTextField);
+//		controls.add(logoutButton);
+//		controls.add(sendButton);
+//		controls.add(sendButton);
+//		controls.add(VBoxConversation);
+//		controls.add(sendTextField);
 //		for (Region r : controls) {}
 
 		anchorPane.setOnKeyPressed(event -> {
@@ -155,6 +153,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	void logoutButtonClick(ActionEvent event) {
 		System.out.println("Logout button clicked");
 		disconnect();
+		cleanController();
 	}
 
 	@FXML
@@ -191,7 +190,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	}
 
 
-	public void setController() throws IOException, SmackException.NotConnectedException, InterruptedException {
+	public void prepareControllerForDisplay() throws IOException {
 
 		for (ControlledScreen controlledScreen : Main.listOfControllers) {
 			if (controlledScreen instanceof LoginController) {
@@ -209,14 +208,17 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 			@Override
 			public void entriesAdded(Collection<Jid> collection) {
+				refreshFriendList();
 			}
 
 			@Override
 			public void entriesUpdated(Collection<Jid> collection) {
+				refreshFriendList();
 			}
 
 			@Override
 			public void entriesDeleted(Collection<Jid> collection) {
+				refreshFriendList();
 			}
 
 			public void presenceChanged(Presence presence) {
@@ -267,8 +269,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		System.out.println("Roster entries: ");
 		xmppSession.presence = new Presence(Presence.Type.available);
 		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
-		clearFriendList();
-		fillFriendList();
+		refreshFriendList();
 		presenceComboBox.getItems().addAll(
 				"available",
 				"chat",
@@ -317,7 +318,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			VBoxFriendList.getChildren().add(button);
 		}
 	}
-
 
 
 	@FXML
@@ -372,5 +372,22 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		return name;
 	}
 
+	public void cleanController() {
+		this.nameFromSelectedButton = "";
+		this.status = "";
+		this.nameFriendField.clear();
+		this.statusTextField.clear();
+		this.presenceComboBox.getItems().clear();
+		this.VBoxConversation.getChildren().clear();
+		this.VBoxFriendList.getChildren().clear();
+		this.sendTextField.clear();
+
+		this.xmppSession.config = null;
+		this.xmppSession.connection = null;
+		this.xmppSession.userAccount = null;
+		this.xmppSession.chatManager = null;
+		this.xmppSession.roster = null;
+		this.xmppSession.presence = null;
+	}
 
 }

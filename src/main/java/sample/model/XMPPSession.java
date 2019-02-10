@@ -10,10 +10,12 @@ public class XMPPSession {
 	public final String serverAddress = "127.0.0.1";
 	public final int port = 5222;
 	public final String xmppDomain = "openfire-server";
+
 	public XMPPTCPConnectionConfiguration config;
 	public XMPPTCPConnection connection;
-	public ChatManager chatManager;
 	public UserAccount userAccount;
+	public ChatManager chatManager;
 	public Roster roster;
 	public Presence presence;
+
 }

@@ -54,7 +54,6 @@ public class LoginController implements Initializable, ControlledScreen {
 
 		xmppSession.config = XMPPTCPConnectionConfiguration.builder()
 				.setUsernameAndPassword(xmppSession.userAccount.getLogin(), xmppSession.userAccount.getPassword())
-//				.setUsernameAndPassword("blabla1", "blabla2")
 				.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
 				.setCustomSSLContext(SSLContext.getDefault())
 				.setXmppDomain(xmppSession.xmppDomain)
@@ -84,7 +83,7 @@ public class LoginController implements Initializable, ControlledScreen {
 		screensController.setScreen(Main.screen2ID);
 		for (ControlledScreen controlledScreen : Main.listOfControllers) {
 			if (controlledScreen instanceof LoggedInController) {
-				((LoggedInController) controlledScreen).setController();
+				((LoggedInController) controlledScreen).prepareControllerForDisplay();
 			}
 		}
 		System.out.println("Zalogowano!");

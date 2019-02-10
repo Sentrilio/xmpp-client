@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import sample.controllers.ControlledScreen;
+import sample.controllers.LoggedInController;
 import sample.controllers.LoginController;
 import sample.controllers.ScreensController;
 import sample.model.XMPPSession;
@@ -51,10 +52,13 @@ public class Main extends Application {
 							} else {
 								System.out.println("There was no connection");
 							}
-						}catch (Exception e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
+//					else if (controlledScreen instanceof LoggedInController) {
+//						((LoggedInController) controlledScreen).cleanController();
+//					}
 				}
 			}
 		});
