@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -40,11 +41,11 @@ public class LoginController implements Initializable, ControlledScreen {
 	private AnchorPane anchorPane;
 
 	@FXML
-	void logInButtonClick(ActionEvent event) throws IOException, NoSuchAlgorithmException {
+	void logInButtonClick(ActionEvent event) throws IOException, NoSuchAlgorithmException, SmackException.NotConnectedException, InterruptedException {
 		loginUser();
 	}
 
-	private void loginUser() throws XmppStringprepException, NoSuchAlgorithmException {
+	private void loginUser() throws IOException, NoSuchAlgorithmException, SmackException.NotConnectedException, InterruptedException {
 		if (loginTextField.getText().equals("") || passwordTextField.getText().equals("")) {
 			info.setText("Pola nie mogą być puste!");
 			return;
@@ -65,7 +66,6 @@ public class LoginController implements Initializable, ControlledScreen {
 		xmppSession.connection = new XMPPTCPConnection(xmppSession.config);
 		try {
 			xmppSession.connection.connect();
-//			xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("nie udalo sie połączyć z serwerem");
@@ -82,9 +82,13 @@ public class LoginController implements Initializable, ControlledScreen {
 			info.setText("Niepoprawny login lub hasło");
 			return;
 		}
-//		xmppSession.chatManager = ChatManager.getInstanceFor(xmppSession.connection);
 		System.out.println(Main.screen2ID);
 		screensController.setScreen(Main.screen2ID);
+		for (ControlledScreen controlledScreen : Main.listOfControllers) {
+			if (controlledScreen instanceof LoggedInController) {
+				((LoggedInController) controlledScreen).setController();
+			}
+		}
 		System.out.println("Zalogowano!");
 		info.setText("");
 		loginTextField.setText("");
@@ -101,7 +105,7 @@ public class LoginController implements Initializable, ControlledScreen {
 				System.out.println("kliknięto enter");
 				try {
 					loginUser();
-				} catch (XmppStringprepException | NoSuchAlgorithmException e) {
+				} catch (NoSuchAlgorithmException | IOException | SmackException.NotConnectedException | InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
