@@ -28,7 +28,6 @@ import sample.Main;
 import sample.model.XMPPSession;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 
@@ -62,7 +61,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	//	private List<Region> controls = new ArrayList<>();
 	private HashMap<String, TextArea> mapOfConversations = new HashMap<>();
-//	private HashMap<String, String> mapOfFriends = new HashMap<>();
 
 
 	void removeEntry() {
@@ -70,6 +68,8 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		System.out.println("name from button: " + nameFromSelectedButton);
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
+			System.out.println(entry.getName());
+			System.out.println(nameFromSelectedButton);
 			if (entry.getName().equals(nameFromSelectedButton)) {
 				try {
 					System.out.println("Removing entry: " + entry.getName());
@@ -191,7 +191,13 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 
 	public void prepareControllerForDisplay() throws IOException {
-
+		presenceComboBox.getItems().addAll(
+				"available",
+				"chat",
+				"away",
+				"xa",
+				"dnd"
+		);
 		for (ControlledScreen controlledScreen : Main.listOfControllers) {
 			if (controlledScreen instanceof LoginController) {
 				this.xmppSession = ((LoginController) controlledScreen).xmppSession;
@@ -234,6 +240,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 								public void run() {
 									// Update UI here.
 									if (presence.getStatus() == null) {
+										System.out.println("status ");
 										((Button) nodeIn).setText(nameFromButton + "(" + presence.getMode() + ")");
 									} else {
 										((Button) nodeIn).setText(nameFromButton + "(" + presence.getMode() + ") " + presence.getStatus());
@@ -270,14 +277,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		xmppSession.presence = new Presence(Presence.Type.available);
 		xmppSession.roster = Roster.getInstanceFor(xmppSession.connection);
 		refreshFriendList();
-		presenceComboBox.getItems().addAll(
-				"available",
-				"chat",
-				"away",
-				"xa",
-				"dnd"
-		);
-
 	}
 
 	private void clearFriendList() {
