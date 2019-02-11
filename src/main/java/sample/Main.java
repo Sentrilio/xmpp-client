@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.jivesoftware.smack.packet.Presence;
 import sample.controllers.ControlledScreen;
 import sample.controllers.LoggedInController;
 import sample.controllers.LoginController;
@@ -47,6 +48,7 @@ public class Main extends Application {
 						try {
 							XMPPSession xmppSession = ((LoginController) controlledScreen).xmppSession;
 							if (xmppSession.connection != null) {
+								xmppSession.presence.setMode(Presence.Mode.away);
 								xmppSession.connection.disconnect();
 								System.out.println("Disconnected client");
 							} else {
@@ -57,7 +59,7 @@ public class Main extends Application {
 						}
 					}
 //					else if (controlledScreen instanceof LoggedInController) {
-//						((LoggedInController) controlledScreen).cleanController();
+//						((LoggedInController) controlledScreen).cleanControllerAndRemoveSession();
 //					}
 				}
 			}
