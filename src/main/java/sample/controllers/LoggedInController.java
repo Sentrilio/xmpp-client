@@ -19,6 +19,8 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -219,6 +221,22 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			public void entriesAdded(Collection<Jid> collection) {
 				refreshFriendAndConversationListSafely();
 				System.out.println("presence changed1");
+
+				for (Jid jid : collection) {
+					RosterEntry entry = xmppSession.roster.getEntry((BareJid) jid);
+					//When the entry is only from the other user, then send a subscription request
+					if (entry != null && entry.getType() == RosterPacket.ItemType.from) {
+						try {
+							System.out.println("Creating entry to: " + entry.getJid());
+							xmppSession.roster.createEntry(entry.getJid(), entry.getName(), new String[0]);
+						} catch (XMPPException | SmackException.NotLoggedInException |
+								SmackException.NoResponseException |
+								SmackException.NotConnectedException |
+								InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
 
 			}
 
