@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -62,18 +63,22 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	private HashMap<String, TextArea> mapOfConversations = new HashMap<>();
 	private HashMap<String, String> mapOfFriends = new HashMap<>();
 
-	void removeEntry() {
-		System.out.println("name from button: " + nameFromSelectedButton);
+	void removeEntry() throws XmppStringprepException {
+		System.out.println("name from button: " + this.nameFromSelectedButton);
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
+			System.out.println(entry.getJid());
 			if (entry.getName().equals(nameFromSelectedButton)) {
 				try {
 					System.out.println("Removing entry: " + entry.getName());
 					xmppSession.roster.removeEntry(entry);
-				} catch (SmackException.NotLoggedInException |
-						SmackException.NoResponseException |
-						SmackException.NotConnectedException |
-						XMPPException.XMPPErrorException |
+					mapOfConversations.remove(nameFromSelectedButton);
+					if (!VBoxConversation.getChildren().isEmpty()) {
+						VBoxConversation.getChildren().remove(0);
+					}
+					System.out.println("pomyślnie usunięto znajomego");
+				} catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
+						SmackException.NotConnectedException | XMPPException.XMPPErrorException |
 						InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -82,7 +87,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	}
 
 	@FXML
-	void removeFriendButtonClick(ActionEvent event) {
+	void removeFriendButtonClick(ActionEvent event) throws XmppStringprepException {
 		removeEntry();
 		refreshFriendAndConversationListSafely();
 	}
@@ -233,7 +238,9 @@ public class LoggedInController implements Initializable, ControlledScreen {
 					if (entry != null && entry.getType() == RosterPacket.ItemType.from) {
 						try {
 							System.out.println("Creating entry to: " + entry.getJid());
-							xmppSession.roster.createEntry(entry.getJid(), entry.getName(), new String[0]);
+							String name = getNameFromJid((EntityBareJid) entry.getJid());
+							System.out.println("and his name is: "+ name);
+							xmppSession.roster.createEntry(entry.getJid(), name, new String[0]);
 						} catch (XMPPException | SmackException.NotLoggedInException |
 								SmackException.NoResponseException |
 								SmackException.NotConnectedException |
@@ -257,21 +264,22 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			@Override
 			public void entriesDeleted(Collection<Jid> collection) {
 				System.out.println("deleted");
-				for (Jid jid : collection) {
-					RosterEntry entry = xmppSession.roster.getEntry((BareJid) jid);
-					//When the entry is only from the other user, then send a subscription request
-					if (entry != null && entry.getType() == RosterPacket.ItemType.remove) {
-						try {
-							System.out.println("Removing entry : " + entry.getJid());
-							xmppSession.roster.removeEntry(entry);
-						} catch (XMPPException | SmackException.NotLoggedInException |
-								SmackException.NoResponseException |
-								SmackException.NotConnectedException |
-								InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
+//				for (Jid jid : collection) {
+//					RosterEntry entry = xmppSession.roster.getEntry((BareJid) jid);
+//					//When the entry is only from the other user, then send a subscription request
+//					if (entry != null && entry.getType() == RosterPacket.ItemType.from) {
+//						System.out.println("cos się usunęło");
+//						try {
+//							System.out.println("Removing entry : " + entry.getJid());
+//							xmppSession.roster.removeEntry(entry);
+//						} catch (XMPPException | SmackException.NotLoggedInException |
+//								SmackException.NoResponseException |
+//								SmackException.NotConnectedException |
+//								InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}
 				refreshFriendAndConversationListSafely();
 				System.out.println("presence changed3");
 			}
@@ -306,13 +314,15 @@ public class LoggedInController implements Initializable, ControlledScreen {
 				String status = presence.getStatus();
 				Button button = new Button();
 				if (status == null) {
-					mapOfFriends.put(name, "(" + mode + ")");
+					mapOfFriends.put(name, " (" + mode + ")");
 				} else {
-					mapOfFriends.put(name, "(" + mode + ") " + status);
+					mapOfFriends.put(name, " (" + mode + ") " + status);
 				}
 				setButtonOnAction(button);
 				button.setText(name + mapOfFriends.get(name));
 				VBoxFriendList.getChildren().add(button);
+				button.prefWidthProperty().bind(VBoxFriendList.widthProperty());
+				button.setAlignment(Pos.CENTER_LEFT);
 			}
 		}
 	}
@@ -321,7 +331,12 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		button.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				nameFromSelectedButton = getNameFromStringOnButton(button.getText());
-				TextArea conversation = mapOfConversations.get(nameFromSelectedButton);
+//				TextArea conversation = mapOfConversations.get(nameFromSelectedButton);
+				TextArea conversation;
+				if (!mapOfConversations.containsKey(nameFromSelectedButton)) {
+					mapOfConversations.put(nameFromSelectedButton, new TextArea());
+				}
+				conversation = mapOfConversations.get(nameFromSelectedButton);
 				if (VBoxConversation.getChildren().isEmpty()) {
 					VBoxConversation.getChildren().add(conversation);
 				} else {
@@ -399,6 +414,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			if (c != '(') {
 				name += c;
 			} else {
+				name = name.trim();
 				break;
 			}
 		}
@@ -415,7 +431,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		this.sendTextField.clear();
 
 		this.xmppSession.presence.setMode(Presence.Mode.away);
-		this.xmppSession.presence.setType(Presence.Type.unavailable);
 		this.xmppSession.connection.disconnect(xmppSession.presence);
 		this.xmppSession.chatManager = null;
 		this.xmppSession.roster = null;
