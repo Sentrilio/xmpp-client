@@ -13,7 +13,7 @@
       <Button focusTraversable="false" layoutX="923.0" layoutY="29.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="85.0" text="Log out" />
       <TextField fx:id="nameFriendField" layoutX="42.0" layoutY="446.0" prefHeight="31.0" prefWidth="346.0" promptText="add friend" />
       <Button focusTraversable="false" layoutX="334.0" layoutY="483.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
-      <Label layoutX="99.0" layoutY="85.0" text="Friend List" />
+      <Label layoutX="54.0" layoutY="85.0" text="Friend List" />
       <ComboBox fx:id="presenceComboBox" layoutX="277.0" layoutY="80.0" onAction="#presenceChanged" prefHeight="31.0" prefWidth="111.0" promptText="available" />
       <TextField fx:id="statusTextField" layoutX="404.0" layoutY="80.0" prefHeight="31.0" prefWidth="519.0" promptText="Write your status..." />
       <ScrollPane layoutX="42.0" layoutY="124.0" prefHeight="314.0" prefWidth="346.0">
