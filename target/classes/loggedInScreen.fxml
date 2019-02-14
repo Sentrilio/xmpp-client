@@ -7,28 +7,32 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.LoggedInController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1050.0" style="-fx-background-color: #8F8FC1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.LoggedInController">
    <children>
-      <Button focusTraversable="false" layoutX="923.0" layoutY="29.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="85.0" text="Log out" />
-      <TextField fx:id="nameFriendField" layoutX="42.0" layoutY="446.0" prefHeight="31.0" prefWidth="346.0" promptText="add friend" />
-      <Button focusTraversable="false" layoutX="334.0" layoutY="483.0" mnemonicParsing="false" onAction="#sendButtonClick" text="Send" />
-      <Label layoutX="99.0" layoutY="85.0" text="Friend List" />
-      <ComboBox fx:id="presenceComboBox" layoutX="277.0" layoutY="80.0" onAction="#presenceChanged" prefHeight="31.0" prefWidth="111.0" promptText="available" />
-      <TextField fx:id="statusTextField" layoutX="404.0" layoutY="80.0" prefHeight="31.0" prefWidth="519.0" promptText="Write your status..." />
-      <ScrollPane layoutX="42.0" layoutY="124.0" prefHeight="314.0" prefWidth="346.0">
+      <Button focusTraversable="false" layoutX="878.0" layoutY="25.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="31.0" prefWidth="119.0" style="-fx-background-color: #D90303; -fx-border-style: solid; -fx-border-width: 2.5;" text="Log out" textFill="WHITE" />
+      <TextField fx:id="nameFriendField" layoutX="42.0" layoutY="446.0" prefHeight="31.0" prefWidth="302.0" promptText="add friend" />
+      <Button focusTraversable="false" layoutX="878.0" layoutY="490.0" mnemonicParsing="false" onAction="#sendButtonClick" prefHeight="31.0" prefWidth="119.0" style="-fx-background-color: green; -fx-border-style: solid; -fx-border-width: 1.5;" text="Send" textFill="WHITE" />
+      <Label layoutX="52.0" layoutY="23.0" text="My Contacts">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font></Label>
+      <ComboBox fx:id="presenceComboBox" layoutX="233.0" layoutY="25.0" onAction="#presenceChanged" prefHeight="31.0" prefWidth="111.0" promptText="available" />
+      <TextField fx:id="statusTextField" layoutX="395.0" layoutY="80.0" prefHeight="31.0" prefWidth="519.0" promptText="Write your status..." />
+      <ScrollPane layoutX="42.0" layoutY="80.0" prefHeight="358.0" prefWidth="302.0">
          <content>
-            <VBox fx:id="VBoxFriendList" prefHeight="317.0" prefWidth="725.0" />
+            <VBox fx:id="VBoxFriendList" prefHeight="507.0" prefWidth="707.0" style="-fx-background-color: #CECAD5;" />
          </content>
       </ScrollPane>
-      <ScrollPane layoutX="404.0" layoutY="119.0" prefHeight="358.0" prefWidth="604.0">
-         <content>
-            <VBox fx:id="VBoxConversation" prefHeight="356.0" prefWidth="602.0" />
-         </content>
-      </ScrollPane>
-      <TextField fx:id="sendTextField" layoutX="404.0" layoutY="483.0" prefHeight="31.0" prefWidth="604.0" />
-      <Button focusTraversable="false" layoutX="923.0" layoutY="80.0" mnemonicParsing="false" onAction="#setStatusButtonClick" text="Set status" />
-      <Button layoutX="42.0" layoutY="483.0" mnemonicParsing="false" onAction="#addFriendButtonClick" text="Add friend" />
-      <Button layoutX="165.0" layoutY="483.0" mnemonicParsing="false" onAction="#removeFriendButtonClick" prefHeight="31.0" prefWidth="119.0" text="Remove friend" />
+      <TextField fx:id="sendTextField" layoutX="394.0" layoutY="446.0" prefHeight="31.0" prefWidth="604.0" />
+      <Button focusTraversable="false" layoutX="914.0" layoutY="80.0" mnemonicParsing="false" onAction="#setStatusButtonClick" text="Set status" />
+      <Button layoutX="42.0" layoutY="490.0" mnemonicParsing="false" onAction="#addFriendButtonClick" prefHeight="31.0" prefWidth="119.0" style="-fx-background-color: green; -fx-border-style: solid; -fx-border-width: 1.5;" text="Add contact" textFill="WHITE" />
+      <Button layoutX="217.0" layoutY="490.0" mnemonicParsing="false" onAction="#removeFriendButtonClick" prefHeight="35.0" prefWidth="127.0" style="-fx-background-color: #D90303; -fx-border-style: solid; -fx-border-width: 1.5;" text="Delete contact" textFill="WHITE" />
+      <VBox fx:id="VBoxConversation" layoutX="395.0" layoutY="123.0" prefHeight="315.0" prefWidth="602.0">
+         <children>
+            <ScrollPane prefHeight="358.0" prefWidth="604.0" style="-fx-background-color: #CECAD5;" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

@@ -5,14 +5,27 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.LoginController">
+<AnchorPane fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="1050.0" style="-fx-background-color: #8F8FC1; -fx-border-width: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.LoginController">
    <children>
-      <TextField fx:id="loginTextField" layoutX="432.0" layoutY="112.0" promptText="login" />
-      <Label focusTraversable="false" layoutX="329.0" layoutY="117.0" text="login" />
-      <Label focusTraversable="false" layoutX="329.0" layoutY="165.0" text="password" />
-      <PasswordField fx:id="passwordTextField" layoutX="432.0" layoutY="160.0" promptText="password" />
-      <Button layoutX="458.0" layoutY="233.0" mnemonicParsing="false" onAction="#logInButtonClick" prefHeight="31.0" prefWidth="136.0" text="Log in" />
-      <Label fx:id="info" focusTraversable="false" layoutX="158.0" layoutY="76.0" />
+      <TextField fx:id="loginTextField" layoutX="432.0" layoutY="112.0" promptText="login" style="-fx-border-style: solid;" />
+      <Label focusTraversable="false" layoutX="289.0" layoutY="110.0" text="login">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font></Label>
+      <Label focusTraversable="false" layoutX="289.0" layoutY="158.0" text="password">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font></Label>
+      <PasswordField fx:id="passwordTextField" layoutX="432.0" layoutY="160.0" promptText="password" style="-fx-border-style: solid;" />
+      <Button layoutX="458.0" layoutY="253.0" mnemonicParsing="false" onAction="#logInButtonClick" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color: #49C85A; -fx-border-style: solid; -fx-border-width: 2.5;" text="Log in">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Button>
+      <Label fx:id="info" focusTraversable="false" layoutX="191.0" layoutY="211.0" prefHeight="21.0" prefWidth="671.0" textFill="#d90303">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
    </children>
 </AnchorPane>

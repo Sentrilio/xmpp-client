@@ -3,6 +3,7 @@ package sample.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -45,7 +46,8 @@ public class LoginController implements Initializable, ControlledScreen {
 
 	private void loginUser() throws IOException, NoSuchAlgorithmException, SmackException.NotConnectedException, InterruptedException {
 		if (loginTextField.getText().equals("") || passwordTextField.getText().equals("")) {
-			info.setText("Pola nie mogą być puste!");
+			info.setText("Incorrect login or password. Please try again!");
+			info.setAlignment(Pos.CENTER);
 			return;
 		}
 		xmppSession.userAccount = new UserAccount(loginTextField.getText(), passwordTextField.getText());

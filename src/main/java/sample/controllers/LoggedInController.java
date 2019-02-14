@@ -125,9 +125,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	@FXML
 	void setStatusButtonClick(ActionEvent event) throws SmackException.NotConnectedException, InterruptedException {
-		if (!statusTextField.getText().equals("")) {
-			xmppSession.presence.setStatus(statusTextField.getText());
-		}
+		xmppSession.presence.setStatus(statusTextField.getText());
 		xmppSession.connection.sendStanza(xmppSession.presence);
 	}
 
