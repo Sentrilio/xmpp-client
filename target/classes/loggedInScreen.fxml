@@ -18,7 +18,7 @@
       <TextField fx:id="statusTextField" layoutX="404.0" layoutY="80.0" prefHeight="31.0" prefWidth="519.0" promptText="Write your status..." />
       <ScrollPane layoutX="42.0" layoutY="124.0" prefHeight="314.0" prefWidth="346.0">
          <content>
-            <VBox fx:id="VBoxFriendList" prefHeight="317.0" prefWidth="363.0" />
+            <VBox fx:id="VBoxFriendList" prefHeight="317.0" prefWidth="725.0" />
          </content>
       </ScrollPane>
       <ScrollPane layoutX="404.0" layoutY="119.0" prefHeight="358.0" prefWidth="604.0">

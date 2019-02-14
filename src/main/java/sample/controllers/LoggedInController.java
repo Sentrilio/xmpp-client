@@ -2,6 +2,8 @@ package sample.controllers;
 
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,6 +40,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	ScreensController screensController;
 	public XMPPSession xmppSession;
 	private String nameFromSelectedButton = "";
+	private int statusTextLimit = 50;
 
 	@FXML
 	private TextField nameFriendField;
@@ -73,10 +76,11 @@ public class LoggedInController implements Initializable, ControlledScreen {
 					System.out.println("Removing entry: " + entry.getName());
 					xmppSession.roster.removeEntry(entry);
 					mapOfConversations.remove(nameFromSelectedButton);
+					nameFromSelectedButton = "";
 					if (!VBoxConversation.getChildren().isEmpty()) {
 						VBoxConversation.getChildren().remove(0);
 					}
-					System.out.println("pomyślnie usunięto znajomego");
+					System.out.println("Successful friend removal");
 				} catch (SmackException.NotLoggedInException | SmackException.NoResponseException |
 						SmackException.NotConnectedException | XMPPException.XMPPErrorException |
 						InterruptedException e) {
@@ -112,9 +116,9 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			jidString += "@" + xmppSession.xmppDomain;
 			EntityBareJid jid = JidCreate.entityBareFrom(jidString);
 			xmppSession.roster.createEntry(jid, nameFriendField.getText(), new String[0]);
-			System.out.println("Utworzono entry: " + jid);
+			System.out.println("Created entry: " + jid);
 		} else {
-			System.out.println("Wprowadź imie kumpla");
+			System.out.println("Type name of friend");
 		}
 		refreshFriendAndConversationListSafely();
 	}
@@ -131,9 +135,9 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	public void initialize(URL location, ResourceBundle resources) {
 		anchorPane.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				System.out.println("kliknięto enter");
+				System.out.println("Enter clicked");
 				try {
-					System.out.println("Proba wysłania wiadomości");
+					System.out.println("Attempt to send a message...");
 					sendMessage();
 				} catch (XmppStringprepException | SmackException.NotConnectedException | InterruptedException e) {
 					e.printStackTrace();
@@ -156,13 +160,17 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 	private void sendMessage() throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
 		String message = sendTextField.getText();
-		sendTextField.clear();
-		mapOfConversations.get(nameFromSelectedButton).appendText("me: " + message + "\n");
-		String jidString = getNameFromStringOnButton(nameFromSelectedButton);
-		jidString += "@" + xmppSession.xmppDomain;
-		EntityBareJid jid = JidCreate.entityBareFrom(jidString);
-		Chat chat = xmppSession.chatManager.chatWith(jid);
-		chat.send(message);
+		if (!nameFromSelectedButton.equals("")) {
+			sendTextField.clear();
+			mapOfConversations.get(nameFromSelectedButton).appendText("me: " + message + "\n");
+			String jidString = getNameFromStringOnButton(nameFromSelectedButton);
+			jidString += "@" + xmppSession.xmppDomain;
+			EntityBareJid jid = JidCreate.entityBareFrom(jidString);
+			Chat chat = xmppSession.chatManager.chatWith(jid);
+			chat.send(message);
+		} else {
+			System.out.println("Destination not chosen");
+		}
 	}
 
 	public void disconnect() {
@@ -183,6 +191,21 @@ public class LoggedInController implements Initializable, ControlledScreen {
 
 
 	public void prepareControllerForDisplay() throws IOException {
+		statusTextField.lengthProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+								Number oldValue, Number newValue) {
+				if (newValue.intValue() > oldValue.intValue()) {
+					// Check if the new character is greater than statusTextLimit
+					if (statusTextField.getText().length() >= statusTextLimit) {
+
+						// if it's 11th character then just setText to previous
+						// one
+						statusTextField.setText(statusTextField.getText().substring(0, statusTextLimit));
+					}
+				}
+			}
+		});
 		setPresenceComboBox();
 		setXmppSessionFromPreviousController();
 		xmppSession.connection.disconnect();
@@ -239,7 +262,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 						try {
 							System.out.println("Creating entry to: " + entry.getJid());
 							String name = getNameFromJid((EntityBareJid) entry.getJid());
-							System.out.println("and his name is: "+ name);
+							System.out.println("and his name is: " + name);
 							xmppSession.roster.createEntry(entry.getJid(), name, new String[0]);
 						} catch (XMPPException | SmackException.NotLoggedInException |
 								SmackException.NoResponseException |
@@ -294,7 +317,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 	}
 
 	private void createConversationLists() {
-//		VBoxConversation.getChildren().clear();
 		Collection<RosterEntry> entries = xmppSession.roster.getEntries();
 		for (RosterEntry entry : entries) {
 			String name = getNameFromJid((EntityBareJid) entry.getJid());
@@ -430,8 +452,10 @@ public class LoggedInController implements Initializable, ControlledScreen {
 		this.VBoxFriendList.getChildren().clear();
 		this.sendTextField.clear();
 
-		this.xmppSession.presence.setMode(Presence.Mode.away);
-		this.xmppSession.connection.disconnect(xmppSession.presence);
+		xmppSession.presence.setMode(Presence.Mode.away);
+		Presence presence = new Presence(Presence.Type.unavailable);
+		presence.setMode(Presence.Mode.away);
+		xmppSession.connection.disconnect(presence);
 		this.xmppSession.chatManager = null;
 		this.xmppSession.roster = null;
 		this.xmppSession.presence = null;

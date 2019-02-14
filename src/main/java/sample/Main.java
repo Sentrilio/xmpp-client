@@ -49,7 +49,9 @@ public class Main extends Application {
 							XMPPSession xmppSession = ((LoginController) controlledScreen).xmppSession;
 							if (xmppSession.connection != null) {
 								xmppSession.presence.setMode(Presence.Mode.away);
-								xmppSession.connection.disconnect();
+								Presence presence = new Presence(Presence.Type.unavailable);
+								presence.setMode(Presence.Mode.away);
+								xmppSession.connection.disconnect(presence);
 								System.out.println("Disconnected client");
 							} else {
 								System.out.println("There was no connection");
