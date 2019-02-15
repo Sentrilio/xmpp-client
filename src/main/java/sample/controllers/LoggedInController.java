@@ -194,11 +194,7 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			public void changed(ObservableValue<? extends Number> observable,
 								Number oldValue, Number newValue) {
 				if (newValue.intValue() > oldValue.intValue()) {
-					// Check if the new character is greater than statusTextLimit
 					if (statusTextField.getText().length() >= statusTextLimit) {
-
-						// if it's 11th character then just setText to previous
-						// one
 						statusTextField.setText(statusTextField.getText().substring(0, statusTextLimit));
 					}
 				}
@@ -285,22 +281,6 @@ public class LoggedInController implements Initializable, ControlledScreen {
 			@Override
 			public void entriesDeleted(Collection<Jid> collection) {
 				System.out.println("deleted");
-//				for (Jid jid : collection) {
-//					RosterEntry entry = xmppSession.roster.getEntry((BareJid) jid);
-//					//When the entry is only from the other user, then send a subscription request
-//					if (entry != null && entry.getType() == RosterPacket.ItemType.from) {
-//						System.out.println("cos się usunęło");
-//						try {
-//							System.out.println("Removing entry : " + entry.getJid());
-//							xmppSession.roster.removeEntry(entry);
-//						} catch (XMPPException | SmackException.NotLoggedInException |
-//								SmackException.NoResponseException |
-//								SmackException.NotConnectedException |
-//								InterruptedException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				}
 				refreshFriendAndConversationListSafely();
 				System.out.println("presence changed3");
 			}

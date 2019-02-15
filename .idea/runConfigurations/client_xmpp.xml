@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="client_xmpp" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="sample.Main" />
+    <module name="client_xmpp" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
